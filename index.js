@@ -16,6 +16,7 @@ const tenderRoutes = require('./routes/tenderRoutes');
 const uomRoutes = require('./routes/uomRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const accountheadsRoutes = require('./routes/accountheadsRoutes');
+const menuRoutes = require('./routes/menuRoutes');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/tender', tenderRoutes);
 app.use('/uom', uomRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/account', accountheadsRoutes);
+app.use('/menu', menuRoutes);
 
 module.exports = app;
 
