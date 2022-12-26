@@ -26,7 +26,6 @@ exports.createTransaction = async (req, res) => {
 
 exports.getTransactions = async (req, res) => {
   data = req.body;
-  console.log(data)
   start_date = data.start_date.toString().replace(/T/, ' ').replace(/\..+/, '');
   end_date = data.end_date.toString().replace(/T/, ' ').replace(/\..+/, '');
 
@@ -44,7 +43,35 @@ exports.getTransactions = async (req, res) => {
 
   db.query (query,(err, result) => {
     if (!err) {
-      if (result.length > 0) res.status(200).send(result);
+      if (result.length > 0){
+        var finaldata = [];
+        result.forEach(res => {
+          let tempdata = {
+            type: '',
+            particulars: '',
+            trsxcn_date: '',
+            debit: '',
+            credit: '',
+            ref_acc_head: ''
+          }
+          tempdata.trsxcn_date = res.trsxcn_date;
+          tempdata.ref_acc_head = res.ref_acc_head;
+
+          if(res.type == 'debit'){
+            tempdata.debit = res.amount;
+          }
+          if(res.type == 'credit'){
+            tempdata.credit = res.amount;
+          }
+
+          tempdata.particulars = {
+            ref_acc_head : res.ref_acc_head,
+            remarks : res.remarks
+          }
+          finaldata.push(tempdata);
+        });
+        res.status(200).send(finaldata);
+      } 
       else res.status(204).json({ message: "Transactions not found" });
     } else res.status(401).json({ status: "failed" });
   });
