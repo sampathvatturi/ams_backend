@@ -17,7 +17,7 @@ exports.createdepartment = async (req, res) => {
     [
       {
         department_name: data.department_name,
-        ranking: data.ranking,
+        // ranking: data.ranking,
         status: data.status,
         created_by: data.created_by,
         updated_by: data.updated_by,
@@ -43,7 +43,7 @@ exports.updateDepartment = async (req, res) => {
     [
       {
         department_name: data.department_name,
-        ranking: data.ranking,
+        // ranking: data.ranking,
         status: data.status,
         updated_date: currdateTime,
         updated_by: data.updated_by,
