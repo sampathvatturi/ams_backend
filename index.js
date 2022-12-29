@@ -17,6 +17,7 @@ const uomRoutes = require('./routes/uomRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const accountheadsRoutes = require('./routes/accountheadsRoutes');
 const menuRoutes = require('./routes/menuRoutes');
+const surveyreportRoutes = require('./routes/surveyreportRoutes');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/uom', uomRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/account', accountheadsRoutes);
 app.use('/menu', menuRoutes);
+app.use('/surveyreport', surveyreportRoutes);
 
 module.exports = app;
 

@@ -142,6 +142,6 @@ exports.updateInvoiceUserStatus = async (req, res) => {
         res.status(200).json({ status: "success", message: "Updated successfully" });
       else 
         res.status(404).json({ status: "failed" });
-    }
-  );
-};
+      }
+    );
+  };
