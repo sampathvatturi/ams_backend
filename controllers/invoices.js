@@ -116,7 +116,7 @@ exports.getlastInvoiceNumber = async (req, res) => {
     "SELECT invoice_number FROM invoices ORDER BY invoice_number DESC LIMIT 1",
     (err, result) => {
       if (!err) {
-        if (result.length === 1) res.status(200).send(result);
+        if (result.length === 1) res.status(200).send(result[0]['invoice_number']);
         else res.status(401).json({ message: "Invoice Number not found" });
       } else res.status(401).json({ status: "failed" });
     }
