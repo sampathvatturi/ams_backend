@@ -2,13 +2,13 @@ const db = require("../config/connection");
 const currdateTime = require('../middleware/currdate');
 
 exports.getInvoices = async (req, res) => {
-  db.query("select * from invoices", (err, result) => {
+  db.query("select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id", (err, result) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(404).json({ message: "Invoice details not found" });
+      else res.status(404).json({ message: "No Invoices Data"});
     } else res.status(401).json({ status: "failed" });
   });
-};
+}
 
 exports.createInvoice = async (req, res) => {
   data = req.body;
@@ -107,6 +107,41 @@ exports.getInvoice = async (req, res) => {
         if (result.length === 1) res.status(200).send(result);
         else res.status(401).json({ message: "Invoice details not found" });
       } else res.status(401).json({ status: "failed" });
+    }
+  );
+};
+
+exports.getVendorInvoices = async (req, res) => {
+  db.query(
+    "select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id",
+    (err, result) => {
+      if (!err) {
+        if (result.length > 0) res.status(200).send(result);
+        else res.status(200).json({ message: "Invoices are not found" });
+      } else res.status(404).json({ status: "failed" });
+    }
+  );
+};
+
+exports.updateInvoiceUserStatus = async (req, res) => {
+  data = req.body;
+  db.query(
+    "update invoices set ? where invoice_id = ? ",
+    [
+      {
+        invoice_user_status: JSON.stringify(data.invoice_user_status),
+        status:data.status,
+        updated_date: currdateTime,
+        updated_by: data.updated_by
+      },
+      req.params.id,
+    ],
+    (err, result) => {
+      console.log(result, err);
+      if (!err)
+        res.status(200).json({ status: "success", message: "Updated successfully" });
+      else 
+        res.status(404).json({ status: "failed" });
     }
   );
 };
