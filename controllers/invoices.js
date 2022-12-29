@@ -13,6 +13,11 @@ exports.getInvoices = async (req, res) => {
 exports.createInvoice = async (req, res) => {
   data = req.body;
   inventory_details = JSON.stringify(data.inventory_details);
+  let user_status_list = [
+    { "reason": "", "status": "Pending", "user_id": 22 },
+    { "reason": "", "status": "Pending", "user_id": 23 }
+  ];
+  user_status_list = JSON.stringify(user_status_list);
   db.query(
     "INSERT INTO `invoices` SET ? ",
     [
@@ -29,7 +34,8 @@ exports.createInvoice = async (req, res) => {
         grand_total: data.grand_total,
         attachments: data.attachments,
         created_by: data.created_by,
-        updated_by: data.updated_by
+        updated_by: data.updated_by,
+        invoice_user_status: user_status_list
       },
     ],
     (err, result) => {
