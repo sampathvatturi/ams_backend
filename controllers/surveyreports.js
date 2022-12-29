@@ -18,6 +18,8 @@ exports.createSurveyreport = async (req, res) => {
       {
         name: data.name,
         description : data.description,
+        start_date : data.start_date,
+        end_date : data.end_date,
         status : data.status,
         created_by: data.created_by,
         updated_by: data.updated_by,
@@ -44,6 +46,8 @@ exports.updateSurveyreport = async (req, res) => {
       {
         name: data.name,
         description : data.description,
+        start_date : data.start_date,
+        end_date : data.end_date,
         status : data.status,
         updated_date: currdateTime,
         updated_by: data.updated_by,
