@@ -5,7 +5,8 @@ exports.getInventory = async (req, res) => {
   db.query("select i.*,u.uom_code,u.uom_name from inventory i, uom u where i.uom_id=u.uom_id", (err, result) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(404).send({ message: "Inventory data not found" });
+      // else res.status(404).send({ message: "Inventory data not found" });
+      else res.send({ message: "Inventory data not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };
