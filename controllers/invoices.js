@@ -144,14 +144,14 @@ exports.updateInvoiceUserStatus = async (req, res) => {
       if (!err) {
         if(data.status === 'paid') {
             let details = {
-              acc_head : 1,
+              acc_head : data.main_acct_id,
               type: 'invoices',
-              remarks: 'Vendor Invoice Bill Paid',
+              remarks: 'Invoice Bill Paid for ' + data.vendor_name,
               mode: 'banking',
               trsxcn_date: currdateTime,
               amount: data.amount,
               created_by: data.updated_by,
-              ref_acc_head: 0
+              ref_acc_head: data.vendor_acct_id
              }
             if(createTransaction(details))
               res.status(200).json({status: "success", message: "Successfully done!"});
