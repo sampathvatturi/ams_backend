@@ -92,7 +92,7 @@ exports.getTransactions = async (req, res) => {
         });
         res.status(200).send(finaldata);
       } 
-      else res.status(204).json({ message: "Transactions not found" });
+      else res.status(200).json({ message: "Transactions not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };

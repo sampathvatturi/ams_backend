@@ -7,7 +7,7 @@ exports.getFunds = async (req, res) => {
   db.query("select * from funds", (err, result) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(404).json({ message: "Funds not found" });
+      else res.status(200).json({ message: "Funds not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };
@@ -48,8 +48,10 @@ exports.createFund = async (req, res) => {
            }
            if(createTransaction(details))
             res.status(200).json({status: "success", message: "Funds added successfully"});
-           else
-            res.status(500).json({status: "failed", message: "Funds adding failed"});
+           else{
+            db_query("delete from funds where fund_id='"+result.insertId+"' ");
+            res.status(401).json({status: "failed", message: "Funds adding failed"});
+           }
           }
           
         //   const fundId = result.insertId;
@@ -191,7 +193,7 @@ exports.getFund = async (req, res) => {
     (err, result) => {
       if (!err) {
         if (result.length === 1) res.status(200).send(result);
-        else res.status(401).json({ message: "Fund not found" });
+        else res.status(200).json({ message: "Fund not found" });
       } else res.status(401).json({ status: "failed" });
     }
   );

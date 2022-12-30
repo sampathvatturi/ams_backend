@@ -5,7 +5,7 @@ exports.getDepartments = async (req, res) => {
   db.query("select * from departments", (err, result, fiels) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(404).json({ message: "Departments not found" });
+      else res.status(200).json({ message: "Departments not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };
@@ -87,7 +87,7 @@ exports.getDepartment = async (req, res) => {
     (err, result) => {
       if (!err) {
         if (result.length === 1) res.status(200).send(result);
-        else res.status(401).json({ message: "Department not found" });
+        else res.status(200).json({ message: "Department not found" });
       } else res.status(401).json({ status: "failed" });
     }
   );

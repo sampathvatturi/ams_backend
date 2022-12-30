@@ -83,7 +83,7 @@ exports.getWork = async (req, res) => {
     (err, result, fiels) => {
       if (!err) {
         if (result.length === 1) res.status(200).send(result);
-        else res.status(401).json({ message: "Work not found" });
+        else res.status(200).json({ message: "Work not found" });
       } else res.status(401).json({ status: "failed" });
     }
   );

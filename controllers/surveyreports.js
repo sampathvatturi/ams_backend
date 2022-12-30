@@ -93,7 +93,7 @@ exports.getSurveyreport = async (req, res) => {
     (err, result, fiels) => {
       if (!err) {
         if (result.length === 1) res.status(200).send(result);
-        else res.status(500).json({ message: "Report not found" });
+        else res.status(200).json({ message: "Report not found" });
       } else res.status(401).json({ status: "failed" });
     }
   );

@@ -6,7 +6,7 @@ exports.getAccountHeads = async (req, res) => {
   db.query("select * from account_heads", (err, result) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(204).json({ message: "Account Heads not found" });
+      else res.status(200).json({ message: "Account Heads not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };

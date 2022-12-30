@@ -5,7 +5,7 @@ exports.getVendors = async (req, res) => {
   db.query("select * from vendors", (err, result) => {
     if (!err) {
       if (result.length > 0) res.status(200).send(result);
-      else res.status(404).json({ message: "Vendors not found" });
+      else res.status(200).json({ message: "Vendors not found" });
     } else res.status(401).json({ status: "failed" });
   });
 };
@@ -117,7 +117,7 @@ exports.getVendorById = async (req, res) => {
     (err, result) => {
       if (!err) {
         if (result.length === 1) res.status(200).send(result);
-        else res.status(401).json({ message: "Vendor not found" });
+        else res.status(200).json({ message: "Vendor not found" });
       } else res.status(401).json({ status: "failed" });
     }
   );
