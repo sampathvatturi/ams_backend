@@ -30,7 +30,8 @@ fs.access(path, (error) => {
 const storage = multer.diskStorage({
     destination: './uploads',
     filename: function(req,file,cb){
-        cb(null,Date.now()+'.'+file.mimetype.split('/')[1])
+        // cb(null,Date.now()+'.'+file.mimetype.split('/')[1])
+        cb(null,file.originalname)
     }
 });
 
