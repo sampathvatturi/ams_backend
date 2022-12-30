@@ -1,5 +1,6 @@
 const db = require("../config/connection");
 const currdateTime = require('../middleware/currdate');
+const { createTransaction } = require("./transactions");
 
 exports.getInvoices = async (req, res) => {
   db.query("select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id", (err, result) => {
@@ -14,8 +15,8 @@ exports.createInvoice = async (req, res) => {
   data = req.body;
   inventory_details = JSON.stringify(data.inventory_details);
   let user_status_list = [
-    { "reason": "", "status": "Pending", "user_id": 22 },
-    { "reason": "", "status": "Pending", "user_id": 23 }
+    { "reason": "", "status": "Pending", "department_id": 15 },
+    { "reason": "", "status": "Pending", "department_id": 23 }
   ];
   user_status_list = JSON.stringify(user_status_list);
   db.query(
@@ -75,14 +76,11 @@ exports.updateInvoice = async (req, res) => {
       req.params.id,
     ],
     (err, result) => {
-      if (!err)
-        res
-          .status(200)
-          .json({
-            status: "success",
-            message: "Invoice details updated successfully",
-          });
-      else res.status(401).json({ status: "failed" });
+      if (!err){
+        res.status(200).json({ status: "success", message: "Invoice details updated successfully" });
+      } else {
+        res.status(401).json({ status: "failed" });
+      }
     }
   );
 };
@@ -143,11 +141,27 @@ exports.updateInvoiceUserStatus = async (req, res) => {
       req.params.id,
     ],
     (err, result) => {
-      console.log(result, err);
-      if (!err)
-        res.status(200).json({ status: "success", message: "Updated successfully" });
-      else 
+      if (!err) {
+        if(data.status === 'paid') {
+            let details = {
+              acc_head : 1,
+              type: 'invoices',
+              remarks: 'Vendor Invoice Bill Paid',
+              mode: 'banking',
+              trsxcn_date: currdateTime,
+              amount: data.amount,
+              created_by: data.updated_by,
+              ref_acc_head: 0
+             }
+            if(createTransaction(details))
+              res.status(200).json({status: "success", message: "Successfully done!"});
+            else
+              res.status(500).json({status: "failed", message: "Failed"});     
+        } else {
+          res.status(200).json({status: "success", message: "Successfully done!"});
+        }
+      } else {
         res.status(404).json({ status: "failed" });
       }
-    );
+    });
   };

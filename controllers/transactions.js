@@ -4,9 +4,9 @@ const currdateTime = require('../middleware/currdate');
 
 
 exports.createTransaction = async (req, res) => {
-  if(req.type === 'funds'){
+  if(req.type === 'funds' || req.type === "invoices") {
     data = req;
-  }else{
+  } else {
     data = req.body;
   }
   
@@ -15,11 +15,10 @@ exports.createTransaction = async (req, res) => {
   credit_query = "insert into transactions set acc_head = "+data.acc_head+",type='credit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount="+data.amount+",created_by="+data.created_by+",ref_acc_head="+data.ref_acc_head+" ";
 
   debit_query = "insert into transactions set acc_head = "+data.ref_acc_head+",type='debit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount='"+data.amount+"',created_by="+data.created_by+",ref_acc_head="+data.acc_head+" ";
-
-
-  if(data.type == 'funds'){
+  console.log(credit_query, debit_query);
+  if(data.type === 'funds' || data.type === 'invoices'){
       db.query(credit_query);
-  }else{
+  } else {
     db.query(debit_query,(err,result)=>{
       if(!err){
         db.query(credit_query,(err,result)=>{

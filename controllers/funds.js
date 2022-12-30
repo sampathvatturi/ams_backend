@@ -49,7 +49,7 @@ exports.createFund = async (req, res) => {
            if(createTransaction(details))
             res.status(200).json({status: "success", message: "Funds added successfully"});
            else
-            res.status(500).json({status: "failes", message: "Funds adding failed"});
+            res.status(500).json({status: "failed", message: "Funds adding failed"});
           }
           
         //   const fundId = result.insertId;
