@@ -167,7 +167,7 @@ exports.getInvoice = async (req, res) => {
 
 exports.getVendorInvoices = async (req, res) => {
   db.query(
-    "select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id",
+    "select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id ",
     (err, result) => {
       if (!err) {
         if (result.length > 0) res.status(200).send(result);
@@ -218,11 +218,13 @@ exports.updateInvoiceUserStatus = async (req, res) => {
   };
 
   exports.cancelInvoice = async (req, res) => {
+    console.log(req)
     db.query(
       "update invoices set ? where invoice_id = ?", 
       [
         {
-        cancel_reason: req.body.cancel_reason
+        cancel_reason: req.body.cancel_reason,
+        status:'cancel'
         },
         req.params.id
       ],
