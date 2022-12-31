@@ -9,7 +9,8 @@ const{
      deleteInvoice,
      getInvoice,
      getVendorInvoices,
-     updateInvoiceUserStatus
+     updateInvoiceUserStatus,
+     cancelInvoice
 } = require('../controllers/invoices');
 
 router.get('/getInvoices', auth.authenticateToken, getInvoices);
@@ -19,5 +20,6 @@ router.delete('/deleteInvoice/:id', auth.authenticateToken, deleteInvoice);
 router.get('/getInvoice/:id', auth.authenticateToken, getInvoice);
 router.get('/getVendorInvoices', auth.authenticateToken, getVendorInvoices);
 router.patch('/updateInvoiceUserStatus/:id', auth.authenticateToken, updateInvoiceUserStatus);
+router.patch('/cancelInvoice/:id', auth.authenticateToken, cancelInvoice);
 
 module.exports = router ;

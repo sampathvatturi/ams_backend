@@ -201,7 +201,8 @@ exports.updateInvoiceUserStatus = async (req, res) => {
               trsxcn_date: currdateTime,
               amount: data.amount,
               created_by: data.updated_by,
-              ref_acc_head: data.vendor_acct_id
+              ref_acc_head: data.vendor_acct_id,
+              invoice_id: req.params.id
              }
             if(createTransaction(details))
               res.status(200).json({status: "success", message: "Successfully done!"});
@@ -214,4 +215,20 @@ exports.updateInvoiceUserStatus = async (req, res) => {
         res.status(404).json({ status: "failed" });
       }
     });
+  };
+
+  exports.cancelInvoice = async (req, res) => {
+    db.query(
+      "update invoices set ? where invoice_id = ?", 
+      [
+        {
+        cancel_reason: req.body.cancel_reason
+        },
+        req.params.id
+      ],
+      (err, result) => {
+        if (!err) res.status(200).json({ status: "success",message: "Invoice Cancelled Successfully" });
+        else res.status(404).json({ status: "failed" });
+      }
+    );
   };
