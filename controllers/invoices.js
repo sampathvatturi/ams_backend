@@ -218,7 +218,6 @@ exports.updateInvoiceUserStatus = async (req, res) => {
   };
 
   exports.cancelInvoice = async (req, res) => {
-    console.log(req)
     db.query(
       "update invoices set ? where invoice_id = ?", 
       [
@@ -233,4 +232,26 @@ exports.updateInvoiceUserStatus = async (req, res) => {
         else res.status(404).json({ status: "failed" });
       }
     );
+  };
+
+  exports.getInvoiceNumber = async (req, res) => {
+    let year;
+    let invoice_number;
+    var date_ob = new Date();
+    var curr_year = date_ob.getFullYear();
+    db.query("select invoice_number from invoices order by invoice_number desc limit 1", (err, result) => {
+      if (!err) {
+        if (result !=''){
+          invoice_number = result[0]['invoice_number'];
+          year = invoice_number.substring(3, 7);
+          if(year<curr_year && (parseInt(curr_year)-parseInt(year)===1)){
+            year = parseInt(year)+1;
+          }
+          invoice_number = invoice_number.substring(0, 3) +year+ (parseInt(invoice_number.substring(7)) + 1).toString().padStart(4, "0");
+        }else{
+          invoice_number = 'INV'+curr_year+'00001';
+        }
+        res.status(200).send({invoice_number:invoice_number})
+      }else res.status(404).send({status:'failed'})
+    });
   };
