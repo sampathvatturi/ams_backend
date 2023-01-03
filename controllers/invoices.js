@@ -255,3 +255,22 @@ exports.updateInvoiceUserStatus = async (req, res) => {
       }else res.status(404).send({status:'failed'})
     });
   };
+
+  exports.getInvoicesbyDate = async (req, res) => {
+    data = req.body;
+    start_date = data.start_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+    end_date = data.end_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+    if(data.status==='%'){
+      query = "select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id and (i.created_date between '"+start_date+"' and '"+end_date+"') "
+    }else{
+      query = "select i.*, v.vendor_name from invoices i, vendors v where i.vendor_id=v.vendor_id and (i.created_date between '"+start_date+"' and '"+end_date+"') and i.status='"+data.status+"'"
+    }
+    
+    console.log(query)
+    db.query(query, (err, result) => {
+      if (!err) {
+        if (result.length > 0) res.status(200).send(result);
+        else res.status(200).json({ message: "No Invoices Data"});
+      } else res.status(401).json({ status: "failed" });
+    });
+  }

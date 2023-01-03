@@ -214,3 +214,21 @@ exports.expenseApproval = async (req, res) => {
       }
     );
   };
+
+  exports.getExpensesbyDate = async (req, res) => {
+    data = req.body;
+    start_date = data.start_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+    end_date = data.end_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+    if(data.status==='%'){
+      query = "select * from expenditures where (created_date between '"+start_date+"' and '"+end_date+"') "
+    }else{
+      query = "select * from expenditures where (created_date between '"+start_date+"' and '"+end_date+"') and status='"+data.status+"'"
+    }
+    
+    db.query(query, (err, result) => {
+      if (!err) {
+        if (result.length > 0) res.status(200).send(result);
+        else res.status(200).json({ message: "No expenditures Data"});
+      } else res.status(401).json({ status: "failed" });
+    });
+  }
