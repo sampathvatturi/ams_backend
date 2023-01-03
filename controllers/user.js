@@ -69,13 +69,42 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-  params = req.body;
-  db.query("INSERT INTO `users` SET ? ", params, (err, result) => {
-    // console.log("Error:", err);
-    if (!err) {
-      res.status(200).json({ status: "success", message: "User added successfully" });
-    } else res.status(404).json({ status: "failed" });
-  });
+  data = req.body;
+  db.query("select COUNT(user_name) AS user from users where user_name=?",data.user_name,(err,result) => {
+    if (!err){
+      if (result[0].user >= 1){
+        return res.status(200).json({ status: 'warning', message: 'username already exists' });
+      }
+      else{
+        db.query("select COUNT(email) AS Email from users where email=?",data.email,(err,result) => {
+          if (!err){
+            if (result[0].Email >= 1){
+              return res.status(200).json({ status: 'warning', message: 'email already exists' });
+            }
+            else{
+              db.query("INSERT INTO `users` SET ? ", data, (err, result) => {
+                // console.log("Error:", err);
+                if (!err) {
+                  res.status(200).json({ status: "success", message: "User added successfully" });
+                } else res.status(404).json({ status: "failed" });
+              });
+            }
+          }
+          else{
+              res.status(404).json({ status: "failed" });}
+              
+        })
+      }
+
+   
+    
+    }
+    else{
+        res.status(404).json({ status: "failed" });
+    }
+    
+  })
+  
 };
 
 exports.updateUser = async (req, res) => {
