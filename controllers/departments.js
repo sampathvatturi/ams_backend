@@ -64,16 +64,26 @@ exports.updateDepartment = async (req, res) => {
 };
 
 exports.deleteDepartment = async (req, res) => {
+  data = req.body;
   db.query(
-    "delete from departments where department_id = ?",
-    [req.params.id],
+    "update departments set ? where department_id = ? ",
+    [
+      {
+        department_name: data.department_name,
+        // ranking: data.ranking,
+        status: 'inactive',
+        updated_date: currdateTime,
+        updated_by: data.updated_by,
+      },
+      req.params.id,
+    ],
     (err, result) => {
       if (!err)
         res
           .status(200)
           .json({
             status: "success",
-            message: "Department deleted successfully",
+            message: "Department status changed to Inactive",
           });
       else res.status(401).json({ status: "failed" });
     }

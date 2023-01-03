@@ -13,7 +13,7 @@ const{
 router.get('/getDepts', auth.authenticateToken,getDepartments);
 router.post('/createDept', auth.authenticateToken,createdepartment);
 router.patch('/updateDept/:id', auth.authenticateToken,updateDepartment);
-router.delete('/deleteDept/:id', auth.authenticateToken,deleteDepartment);
+router.patch('/deleteDept/:id', auth.authenticateToken,deleteDepartment);
 router.get('/getDept/:id', auth.authenticateToken,getDepartment);
 
 module.exports = router ;
