@@ -8,7 +8,8 @@ const{
     updateExpense,
     deleteExpense,
     createExpense,
-    cancelExpense
+    cancelExpense,
+    expenseApproval
 } = require('../controllers/expenditures');
 
 router.get('/getExpenses', auth.authenticateToken, getExpenses);
@@ -17,5 +18,6 @@ router.patch('/updateExpense/:id', auth.authenticateToken, updateExpense);
 router.delete('/deleteExpense/:id', auth.authenticateToken, deleteExpense);
 router.get('/getExpense/:id', auth.authenticateToken, getExpense);
 router.patch('/cancelExpense/:id', auth.authenticateToken, cancelExpense);
+router.patch('/expenseApproval/:id', auth.authenticateToken, expenseApproval);
 
 module.exports = router ;

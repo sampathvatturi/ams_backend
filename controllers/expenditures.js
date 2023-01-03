@@ -22,23 +22,22 @@ exports.createExpense = async (req, res) => {
   var date_ob = new Date();
   var curr_year = date_ob.getFullYear();
   var year;
-  db.query("select exp_number from expenditures order by exp_number desc limit 1", (err, result) => {
+  db.query("select exp_inv_number from expenditures order by exp_inv_number desc limit 1", (err, result) => {
     if (!err) {
       if (result !=''){
-        exp_number = result[0]['exp_number'];
-        year = exp_number.substring(3, 7);
+        exp_inv_number = result[0]['exp_inv_number'];
+        year = exp_inv_number.substring(3, 7);
         if(year<curr_year && (parseInt(curr_year)-parseInt(year)===1)){
           year = parseInt(year)+1;
         }
-        
-        exp_number = exp_number.substring(0, 3) +year+ (parseInt(exp_number.substring(7)) + 1).toString().padStart(4, "0");
+        exp_inv_number = exp_inv_number.substring(0, 3) +year+ (parseInt(exp_inv_number.substring(7)) + 1).toString().padStart(4, "0");
         db.query(
           "INSERT INTO `expenditures` SET ? ",
           [
             {
               description: data.description,
               category: data.category,
-              exp_number: exp_number,
+              exp_inv_number: exp_inv_number,
               status: data.status,
               amount: data.amount,
               tax: data.tax,
@@ -61,14 +60,14 @@ exports.createExpense = async (req, res) => {
           }
         );
         }else{
-          invoice_number = 'EXP'+curr_year+'00001';
+          exp_inv_number = 'EXP'+curr_year+'00001';
           db.query(
             "INSERT INTO `invoices` SET ? ",
             [
               {
                 description: data.description,
                 category: data.category,
-                exp_number: exp_number,
+                exp_inv_number: exp_inv_number,
                 status: data.status,
                 amount: data.amount,
                 tax: data.tax,
@@ -172,22 +171,23 @@ exports.expenseApproval = async (req, res) => {
       if (!err) {
         if(data.status === 'paid') {
             let details = {
-              acc_head : 5,
-            //   acc_head : data.main_acct_id,
-              type: 'expense',
+              acc_head : 1,
+              type: 'expenses',
               remarks: 'Expense Bill Paid for ' + data.category,
               mode: 'banking',
               trsxcn_date: currdateTime,
               amount: data.amount,
               created_by: data.updated_by,
-              ref_acc_head: 1,
-            //   ref_acc_head: data.vendor_acct_id,
-              invoice_id: req.params.id
+              ref_acc_head: 5,
+              invoice_id: data.exp_inv_number
              }
+             console.log(details)
             if(createTransaction(details))
               res.status(200).json({status: "success", message: "Successfully done!"});
-            else
-              res.status(500).json({status: "failed", message: "Failed"});     
+            else{
+              db.query('ROLLBACK');
+              res.status(500).json({status: "failed", message: "Failed"});
+            }
         } else {
           res.status(200).json({status: "success", message: "Successfully done!"});
         }
@@ -195,7 +195,7 @@ exports.expenseApproval = async (req, res) => {
         res.status(404).json({ status: "failed" });
       }
     });
-  };
+  }
 
   exports.cancelExpense = async (req, res) => {
     console.log(req)

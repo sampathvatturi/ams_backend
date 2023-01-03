@@ -4,17 +4,18 @@ const currdateTime = require('../middleware/currdate');
 
 
 exports.createTransaction = async (req, res) => {
-  if(req.type === 'funds' || req.type === "invoices") {
+  if(req.type === 'funds' || req.type === "invoices" || req.type === "expenses") {
     data = req;
   } else {
     data = req.body;
+    data.invoice_id=null;
   }
   
   trsxcn_date = currdateTime;
   //acc_head = to,ref_acc_head = from
-  credit_query = "insert into transactions set acc_head = "+data.acc_head+",type='credit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount="+data.amount+",created_by="+data.created_by+",ref_acc_head="+data.ref_acc_head+" ";
+  credit_query = "insert into transactions set acc_head = "+data.acc_head+",type='credit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount="+data.amount+",created_by="+data.created_by+",ref_acc_head="+data.ref_acc_head+",invoice_id='"+data.invoice_id+"' ";
 
-  debit_query = "insert into transactions set acc_head = "+data.ref_acc_head+",type='debit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount='"+data.amount+"',created_by="+data.created_by+",ref_acc_head="+data.acc_head+" ";
+  debit_query = "insert into transactions set acc_head = "+data.ref_acc_head+",type='debit',remarks='"+data.remarks+"',mode='"+data.mode+"',trsxcn_date='"+trsxcn_date+"',amount='"+data.amount+"',created_by="+data.created_by+",ref_acc_head="+data.acc_head+",invoice_id='"+data.invoice_id+"' ";
   console.log(credit_query, debit_query);
   if(data.type === 'funds') {
       db.query(credit_query);
@@ -23,7 +24,7 @@ exports.createTransaction = async (req, res) => {
       if(!err){
         db.query(credit_query,(err,result)=>{
           if(!err) {
-            if(data.type !== 'invoices') {              
+            if(data.type !== 'invoices' && data.type !== 'expenses') {              
               res.status(200).json({status:"success",message:"Transaction added successfully"});
             }
           }
