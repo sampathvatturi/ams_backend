@@ -36,6 +36,7 @@ exports.loginUser = async (req, res) => {
             role: result[0].role,
             status: result[0].status,
             department_id: result[0].department_id,
+            vendor_id: result[0]?.vendor_id
           };
           res.status(200).json({ token: accessToken, user_data: session_user_data });
           db.query("update users set login_time= '" + dateTime + "' where user_id = '" + result[0].user_id + "'");

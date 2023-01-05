@@ -53,6 +53,7 @@ exports.createVendor = async (req, res) => {
                       address: data.address,
                       email: data.email,
                       role: 'vendor',
+                      vendor_id: result.insertId,
                       status: data.status,
                       created_by: data.created_by,
                       updated_by: data.updated_by
