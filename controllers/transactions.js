@@ -104,7 +104,7 @@ exports.getTransactionsCount = async (req, res) => {
   end_date = data.end_date.toString().replace(/T/, ' ').replace(/\..+/, '');
 
 
-  query = "select count(*) as count,CAST(trsxcn_date as date) as date from transactions WHERE (trsxcn_date BETWEEN '"+data.start_date+"' and '"+data.end_date+"') GROUP by CAST(trsxcn_date as date);"
+  query = "select count(*) as count,CAST(trsxcn_date as date) as date from transactions WHERE (trsxcn_date BETWEEN '"+start_date+"' and '"+end_date+"') GROUP by CAST(trsxcn_date as date);"
   db.query(query, (err, result) => {
     if (!err) {
       if (result.length > 0){
