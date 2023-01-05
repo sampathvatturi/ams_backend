@@ -274,3 +274,14 @@ exports.updateInvoiceUserStatus = async (req, res) => {
       } else res.status(401).json({ status: "failed" });
     });
   }
+
+  exports.getInvoicesstatus = async (req, res) => {
+    data = req.body;
+    query = "select count(*) as count, status group by status"
+    db.query(query, (err, result) => {
+      if (!err) {
+        if (result.length > 0) res.status(200).send(result);
+        else res.status(200).json({ message: "No Invoices Data"});
+      } else res.status(401).json({ status: "failed" });
+    });
+  }
