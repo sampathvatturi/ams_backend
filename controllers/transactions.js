@@ -97,3 +97,21 @@ exports.getTransactions = async (req, res) => {
     } else res.status(401).json({ status: "failed" });
   });
 };
+
+exports.getTransactionsCount = async (req, res) => {
+  data = req.body;
+  start_date = data.start_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+  end_date = data.end_date.toString().replace(/T/, ' ').replace(/\..+/, '');
+
+
+  query = "select count(*) as count,CAST(trsxcn_date as date) as date from transactions WHERE (trsxcn_date BETWEEN '"+data.start_date+"' and '"+data.end_date+"') GROUP by CAST(trsxcn_date as date);"
+  db.query(query, (err, result) => {
+    if (!err) {
+      if (result.length > 0){
+        console.log(result)
+        res.status(200).send(result);
+      } 
+      else res.json({ message: "Transactions not found" });
+    } else res.status(401).json({ status: "failed" });
+  });
+}; 

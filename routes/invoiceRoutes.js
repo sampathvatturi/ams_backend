@@ -26,6 +26,6 @@ router.patch('/updateInvoiceUserStatus/:id', auth.authenticateToken, updateInvoi
 router.patch('/cancelInvoice/:id', auth.authenticateToken, cancelInvoice);
 router.get('/getInvoiceNumber', auth.authenticateToken, getInvoiceNumber);
 router.post('/getInvoicesbyDate', auth.authenticateToken, getInvoicesbyDate);
-router.post('/getInvoicesstatus', auth.authenticateToken, getInvoicesstatus);
+router.get('/getInvoicesstatus', auth.authenticateToken, getInvoicesstatus);
 
 module.exports = router ;

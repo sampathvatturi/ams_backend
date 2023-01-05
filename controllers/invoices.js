@@ -276,8 +276,7 @@ exports.updateInvoiceUserStatus = async (req, res) => {
   }
 
   exports.getInvoicesstatus = async (req, res) => {
-    data = req.body;
-    query = "select count(*) as count, status group by status"
+    query = "select count(*) as count, status from invoices group by status"
     db.query(query, (err, result) => {
       if (!err) {
         if (result.length > 0) res.status(200).send(result);
