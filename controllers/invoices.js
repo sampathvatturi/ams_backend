@@ -154,7 +154,7 @@ exports.deleteInvoice = async (req, res) => {
 
 exports.getInvoice = async (req, res) => {
   db.query(
-    "select * from invoice where invoice_id = ?",
+    "SELECT i.*,v.vendor_name FROM invoices i, vendors v WHERE i.vendor_id=v.vendor_id AND invoice_id=?",
     [req.params.id],
     (err, result) => {
       if (!err) {
