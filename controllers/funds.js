@@ -44,7 +44,7 @@ exports.createFund = async (req, res) => {
             trsxcn_date:data.fund_released_date,
             amount:data.fund_value,
             created_by:data.created_by,
-            ref_acc_head:0
+            ref_acc_head:id
            }
            if(createTransaction(details))
             res.status(200).json({status: "success", message: "Funds added successfully"});

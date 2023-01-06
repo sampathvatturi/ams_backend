@@ -45,13 +45,13 @@ exports.getTransactions = async (req, res) => {
 
   if(data.type==="%" && data.acc_head !="%"){
     if(data.acc_head === '14' || data.acc_head === '15'){
-      query = basequery+"and (ref_acc_head = 0 and acc_head = "+data.acc_head+") or (ref_acc_head = "+data.acc_head+") order by trsxcn_date DESC";
+      query = basequery+"and (ref_acc_head = "+data.acc_head+" and acc_head = "+data.acc_head+") or (ref_acc_head = "+data.acc_head+") order by trsxcn_date DESC";
     }else{
       query = basequery+"and (ref_acc_head = "+data.acc_head+") order by trsxcn_date DESC";
     }
   }else if(data.type !="%" && data.acc_head !="%"){
     if(data.acc_head === '14' || data.acc_head === '15'){
-      query = basequery+"and (ref_acc_head = 0 and acc_head = "+data.acc_head+") or (ref_acc_head = "+data.acc_head+") and type IN('"+data.type+"') order by trsxcn_date DESC";
+      query = basequery+"and (ref_acc_head = "+data.acc_head+" and acc_head = "+data.acc_head+") or (ref_acc_head = "+data.acc_head+") and type IN('"+data.type+"') order by trsxcn_date DESC";
     }else{
       query = basequery+"and (ref_acc_head = "+data.acc_head+") and type IN('"+data.type+"') order by trsxcn_date DESC";
     }
@@ -109,6 +109,18 @@ exports.getTransactionsCount = async (req, res) => {
     if (!err) {
       if (result.length > 0){
         console.log(result)
+        res.status(200).send(result);
+      } 
+      else res.json({ message: "Transactions not found" });
+    } else res.status(401).json({ status: "failed" });
+  });
+}; 
+
+exports.getTrailBalance = async (req, res) => {
+  query = "select ac.name,a.credit,b.debit from transactions t LEFT JOIN (SELECT sum(x.amount) as credit,x.ref_acc_head FROM transactions x WHERE (x.type = 'credit' and x.ref_acc_head !=0) or (x.type = 'credit' and x.acc_head IN('14,15')) GROUP BY x.ref_acc_head) a ON a.ref_acc_head = t.ref_acc_head LEFT JOIN (SELECT sum(y.amount) as debit,y.ref_acc_head FROM transactions y WHERE y.type = 'debit' and y.ref_acc_head !=0 GROUP BY y.ref_acc_head) b ON b.ref_acc_head = t.ref_acc_head LEFT JOIN account_heads ac ON ac.id = t.ref_acc_head GROUP BY t.ref_acc_head;"
+  db.query(query, (err, result) => {
+    if (!err) {
+      if (result.length > 0){
         res.status(200).send(result);
       } 
       else res.json({ message: "Transactions not found" });
