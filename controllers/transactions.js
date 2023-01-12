@@ -117,7 +117,7 @@ exports.getTransactionsCount = async (req, res) => {
 }; 
 
 exports.getTrailBalance = async (req, res) => {
-  query = "select ac.name,a.credit,b.debit from transactions t LEFT JOIN (SELECT sum(x.amount) as credit,x.ref_acc_head FROM transactions x WHERE (x.type = 'credit' and x.ref_acc_head !=0) or (x.type = 'credit' and x.acc_head IN('14,15')) GROUP BY x.ref_acc_head) a ON a.ref_acc_head = t.ref_acc_head LEFT JOIN (SELECT sum(y.amount) as debit,y.ref_acc_head FROM transactions y WHERE y.type = 'debit' and y.ref_acc_head !=0 GROUP BY y.ref_acc_head) b ON b.ref_acc_head = t.ref_acc_head LEFT JOIN account_heads ac ON ac.id = t.ref_acc_head GROUP BY t.ref_acc_head;"
+  query = "select ac.name,a.credit,b.debit,IFNULL(a.credit,0)-IFNULL(b.debit,0) as total from transactions t LEFT JOIN (SELECT sum(x.amount) as credit,x.ref_acc_head FROM transactions x WHERE (x.type = 'credit' and x.ref_acc_head !=0) or (x.type = 'credit' and x.acc_head IN('14,15')) GROUP BY x.ref_acc_head) a ON a.ref_acc_head = t.ref_acc_head LEFT JOIN (SELECT sum(y.amount) as debit,y.ref_acc_head FROM transactions y WHERE y.type = 'debit' and y.ref_acc_head !=0 GROUP BY y.ref_acc_head) b ON b.ref_acc_head = t.ref_acc_head LEFT JOIN account_heads ac ON ac.id = t.ref_acc_head GROUP BY t.ref_acc_head;"
   db.query(query, (err, result) => {
     if (!err) {
       if (result.length > 0){
@@ -126,4 +126,18 @@ exports.getTrailBalance = async (req, res) => {
       else res.json({ message: "Transactions not found" });
     } else res.status(401).json({ status: "failed" });
   });
-}; 
+};
+
+exports.addCashAdjustment = async (req, res) => {
+  data = req.body;
+  res.send(data)
+  // query = "select ac.name,a.credit,b.debit,IFNULL(a.credit,0)-IFNULL(b.debit,0) as total from transactions t LEFT JOIN (SELECT sum(x.amount) as credit,x.ref_acc_head FROM transactions x WHERE (x.type = 'credit' and x.ref_acc_head !=0) or (x.type = 'credit' and x.acc_head IN('14,15')) GROUP BY x.ref_acc_head) a ON a.ref_acc_head = t.ref_acc_head LEFT JOIN (SELECT sum(y.amount) as debit,y.ref_acc_head FROM transactions y WHERE y.type = 'debit' and y.ref_acc_head !=0 GROUP BY y.ref_acc_head) b ON b.ref_acc_head = t.ref_acc_head LEFT JOIN account_heads ac ON ac.id = t.ref_acc_head GROUP BY t.ref_acc_head;"
+  // db.query(query, (err, result) => {
+  //   if (!err) {
+  //     if (result.length > 0){
+  //       res.status(200).send(result);
+  //     } 
+  //     else res.json({ message: "Transactions not found" });
+  //   } else res.status(401).json({ status: "failed" });
+  // });
+};
